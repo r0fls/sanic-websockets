@@ -7,8 +7,13 @@ class Sanic(Sanic):
         super().__init__()
         self.before_start = None
 
-    def websocket(self, handler, host='localhost', port='3000'):
-        server = websockets.serve(handler, host, port)
+    def websocket(self, handler, host=None, port=None,
+                  *args, **kwargs):
+        if kwargs.get('host') is None:
+            kwargs['host'] = 'localhost'
+        if kwargs.get('port') is None:
+            kwargs['port'] = '3000'
+        server = websockets.serve(handler, *args, **kwargs)
 
         def before_start(app, loop):
             asyncio.get_event_loop().run_until_complete(server)

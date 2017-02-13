@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>WebSocket demo</title>
+  </head>
+  <script
+    src="https://code.jquery.com/jquery-3.1.1.min.js"
+    integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+    crossorigin="anonymous">
+  </script>
+  <body>
+    <script>
+      var ws = new WebSocket("ws://127.0.0.1:3000/"),
+        messages = document.createElement('ul'),
+        input = document.createElement('input');
+      if (typeof(myname) == 'undefined') {
+        input.className = 'name';
+
+      }
+      else {
+        input.className = 'input';
+      }
+      ws.onmessage = function (event) {
+        var messages = document.getElementsByTagName('ul')[0],
+          message = document.createElement('ul'),
+          data = JSON.parse(event.data);
+          if (typeof(data['user']) != 'undefined') {
+          content = document.createTextNode(data['user'] +':  ' + data['data']);
+        } else {
+          content = document.createTextNode(data['data']);
+        }
+        message.appendChild(content);
+        messages.appendChild(message);
+      };
+      $('body').append(messages);
+      $('body').append(input);
+      $('.name').attr('placeholder', 'enter your name');
+
+      $('input').keypress(function (e) {
+        if (e.which == 13) {
+          if (typeof(myname) == 'undefined') {
+            myname = $(this).val();
+          };
+          data =JSON.stringify({
+                           'type': this.className,
+                           'user': myname,
+                           'data': $(this).val()
+                         })
+          ws.send(data);
+          $(this).val('');
+          if (this.className == 'name') {
+            $(this).attr('class', 'input');
+            $('.input').attr('placeholder', '');
+          }
+          return false;
+        }
+      });
+    </script>
+  </body>
+</html>
