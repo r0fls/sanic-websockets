@@ -15,19 +15,6 @@ class Sanic(Sanic):
             kwargs['port'] = '3000'
         server = websockets.serve(handler, *args, **kwargs)
 
+        @self.listeners('before_server_start')
         def before_start(app, loop):
             asyncio.get_event_loop().run_until_complete(server)
-        self.before_start = before_start
-
-    def run(self, *args, **kwargs):
-        before_start = kwargs.get('before_start')
-        if self.before_start is not None:
-            _before_start = before_start
-
-            def _before(app, loop):
-                if _before_start is not None:
-                    _before_start(app, loop)
-                self.before_start(app, loop)
-            before_start = _before
-        kwargs['before_start'] = before_start
-        super().run(*args, **kwargs)
