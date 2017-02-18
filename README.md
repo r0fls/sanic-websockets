@@ -3,6 +3,8 @@ sanic + websockets
 
 Small wrapper to make running a [websockets](http://websockets.readthedocs.io/en/stable/intro.html) server from the same app easier.
 
+Note this has already become less useful because I added a method `add_task` to sanic that allows integrating with other servers like websockets fairly easy. See the PR here for more context: https://github.com/channelcat/sanic/pull/411
+
 **ws.py**
 ```python
 
